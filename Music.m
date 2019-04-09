@@ -57,6 +57,8 @@ handles.output = hObject;
 
 % Update handles structure
 guidata(hObject, handles);
+load('training_data.mat')
+
 
 % UIWAIT makes Music wait for user response (see UIRESUME)
 % uiwait(handles.figure1);
@@ -78,12 +80,16 @@ function browse_Callback(hObject, eventdata, handles)
 % hObject    handle to browse (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
+load('training_data.mat')
 [filename pathname] = uigetfile({'*.mp3'},'File Selector');
 if filename==0
     return
 end
 
-handles.fullpathname = strcat(pathname, filename)
+handles.fullpathname = strcat(pathname, filename);
+genre = genre_of(mfcc_cells,handles.fullpathname,10);
+set(handles.title, 'string', filename);
+set(handles.genre, 'string', genre);
 
 
 
