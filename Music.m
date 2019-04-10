@@ -22,7 +22,7 @@ function varargout = Music(varargin)
 
 % Edit the above text to modify the response to help Music
 
-% Last Modified by GUIDE v2.5 09-Apr-2019 07:34:33
+% Last Modified by GUIDE v2.5 10-Apr-2019 10:42:52
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -54,10 +54,9 @@ function Music_OpeningFcn(hObject, eventdata, handles, varargin)
 
 % Choose default command line output for Music
 handles.output = hObject;
-
+handles.train = load('training_data.mat')
 % Update handles structure
 guidata(hObject, handles);
-load('training_data.mat')
 
 
 % UIWAIT makes Music wait for user response (see UIRESUME)
@@ -80,14 +79,15 @@ function browse_Callback(hObject, eventdata, handles)
 % hObject    handle to browse (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-load('training_data.mat')
 [filename pathname] = uigetfile({'*.mp3'},'File Selector');
 if filename==0
     return
 end
 
 handles.fullpathname = strcat(pathname, filename);
-genre = genre_of(mfcc_cells,handles.fullpathname,10);
+genre = genre_of(handles.train.mfcc_cells,handles.fullpathname,10);
+[s,f,t,p] = features(handles.fullpathname)
+%surf(t,f,10*log10(p),'edgecolor','none'); axis tight; view(0,90);
 set(handles.title, 'string', filename);
 set(handles.genre, 'string', genre);
 
@@ -182,3 +182,11 @@ function listbox2_CreateFcn(hObject, eventdata, handles)
 if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
     set(hObject,'BackgroundColor','white');
 end
+
+
+% --- If Enable == 'on', executes on mouse press in 5 pixel border.
+% --- Otherwise, executes on mouse press in 5 pixel border or over text2.
+function text2_ButtonDownFcn(hObject, eventdata, handles)
+% hObject    handle to text2 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)

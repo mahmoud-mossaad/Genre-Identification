@@ -8,7 +8,7 @@ function MFCC_coeff = create_mfcc(song_file_name, COUNT_BINS, COUNT_FRAMES, COUN
 % COUNT_COEFF is how many mel coefficients to keep (COUNT_COEFF <= COUNT_BINS).
 % STEP_TIME is the frequency after which frame is captured.
 %
-%NUM_SEC = 100;  % take a full 10-second sample (then split into 20ms frames)
+NUM_SEC = 10;  % take a full 10-second sample (then split into 20ms frames)
 
 format = song_file_name(end-1:end);
 
@@ -17,7 +17,6 @@ if (strcmp(format, 'p3'))
     slength = mp3read(song_file_name, 'size');
     offset = floor(slength(1,1)/3);
     [~, fs] = audioread(song_file_name, [offset offset+1]);
-    NUM_SEC = offset/fs;
     [s, fs] = audioread(song_file_name, [offset offset+fs*NUM_SEC]);
 end
 
@@ -52,6 +51,6 @@ for i = 1:COUNT_FRAMES
     m = log10(mel_bins*f);
     m = dct(m);          % dim(m): COUNT_BINS x 1
     m = m(1:COUNT_COEFF);
-    MFCC_coeff(i, :) = m'; 
+    MFCC_coeff(i, :) = m' 
 end
 end
